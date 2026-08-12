@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="country-data.js"></script>
 <style>
   :root{
     --ink:#0b0f1a; --panel:#161f33; --amber:#e2a23d; --teal:#4f8f83;
@@ -225,7 +226,7 @@
 
   <div class="tooltip" id="tooltip"></div>
   <div class="hint"><span class="dot"></span><span data-i18n="hint">Click any country to see its news</span></div>
-  <div class="source-flag" id="sourceFlag">Map: Natural Earth (50m) via world-atlas · ISC license<br>Country facts: REST Countries (free API) · News: demo data</div>
+  <div class="source-flag" id="sourceFlag">Map: Natural Earth (50m) via world-atlas · ISC license<br>Country facts: local static dataset · News: demo data</div>
 
   <div class="zoom-controls">
     <button id="zoomOut" aria-label="Zoom out">−</button>
@@ -373,8 +374,8 @@ let miniViewportRect = null;
 // already clicked away from can never overwrite what's on screen
 // (fixes stale data on rapid clicking / repeated open-close).
 let openToken = 0;
-// Caches successful REST Countries responses per country name so
-// re-selecting the same country never issues a duplicate network request.
+// Caches local country facts per country name so re-selecting the same
+// country reuses the same static record.
 const factsCache = {};
 // Caches generated demo-news headlines per country so reopening the same
 // country reuses the already-computed set instead of recomputing it.
@@ -496,36 +497,27 @@ searchInput.addEventListener("keydown", (e) => {
 });
 
 /* =========================================================================
-   Country facts — REST Countries (restcountries.com), free, no API key.
+   Country facts — local static data keyed by world-atlas country name.
    ========================================================================= */
-async function fetchCountryFacts(name, token){
-  try{
-    let c = factsCache[name];
-    if(!c){
-      const res = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fields=capital,population,region,flag,flags,currencies,timezones`);
-      if(!res.ok) throw new Error("not found");
-      const data = await res.json();
-      c = Array.isArray(data) ? data[0] : data;
-      factsCache[name] = c;
-    }
-    // A newer country was opened (or the panel was closed) while this
-    // request was in flight — discard the stale result.
-    if(token !== openToken) return;
-    factRow.innerHTML = `
-      ${c.flag ? `<div class="fact"><div class="k">&nbsp;</div><div class="v" style="font-size:22px">${escapeHtml(c.flag)}</div></div>` : ""}
-      ${c.capital ? `<div class="fact"><div class="k">${t('capital')}</div><div class="v">${escapeHtml(c.capital[0]||'—')}</div></div>` : ""}
-      ${c.population ? `<div class="fact"><div class="k">${t('population')}</div><div class="v">${Number(c.population).toLocaleString('en-US')}</div></div>` : ""}
-      ${c.region ? `<div class="fact"><div class="k">${t('region')}</div><div class="v">${escapeHtml(c.region)}</div></div>` : ""}
-    `;
-    factRow.style.display = "flex";
-    updateCountryCard(name, c);
-  }catch(e){
-    if(token !== openToken) return;
+function fetchCountryFacts(name, token){
+  const c = factsCache[name] || window.COUNTRY_DATA[name];
+  if(c) factsCache[name] = c;
+  if(token !== openToken) return;
+  if(!c){
     factRow.style.display = "none";
     countryCard.classList.remove("show");
     cardUtcOffsetMinutes = null;
     ccTime.textContent = "—";
+    return;
   }
+  factRow.innerHTML = `
+    ${c.flag ? `<div class="fact"><div class="k">&nbsp;</div><div class="v" style="font-size:22px">${escapeHtml(c.flag)}</div></div>` : ""}
+    ${c.capital ? `<div class="fact"><div class="k">${t('capital')}</div><div class="v">${escapeHtml(c.capital[0]||'—')}</div></div>` : ""}
+    ${c.population ? `<div class="fact"><div class="k">${t('population')}</div><div class="v">${Number(c.population).toLocaleString('en-US')}</div></div>` : ""}
+    ${c.region ? `<div class="fact"><div class="k">${t('region')}</div><div class="v">${escapeHtml(c.region)}</div></div>` : ""}
+  `;
+  factRow.style.display = "flex";
+  updateCountryCard(name, c);
 }
 
 /* Selected-country card — left side of the map: flag, population,
