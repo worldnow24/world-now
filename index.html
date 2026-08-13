@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script src="country-data.js"></script>
+<script src="./news-data.js"></script>
 <script src="admin1-boundaries.js"></script>
 <style>
   :root{
@@ -152,7 +153,7 @@
   .country-card .cc-flag img{width:44px;height:auto;border-radius:2px;box-shadow:0 0 0 1px var(--line);}
   .viewer-line{display:flex;justify-content:space-between;align-items:center;padding:7px 0 9px;margin-bottom:2px;border-bottom:1px solid var(--line);font:600 8px 'IBM Plex Mono',monospace;color:var(--paper-dim);letter-spacing:.7px}.viewer-line strong{color:var(--amber);font:600 10px 'IBM Plex Mono',monospace}.country-card .cc-name{font-family:'Newsreader',serif;font-weight:700;font-size:17px;color:var(--paper);
     margin-bottom:10px;line-height:1.2;}
-  .country-card .cc-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  .cc-news{font-family:'Inter',sans-serif;font-size:11px;line-height:1.45;color:var(--paper-dim);padding:0 0 10px;border-bottom:1px solid var(--line);margin-bottom:2px}.country-card .cc-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
     padding:6px 0;border-top:1px solid var(--line);}
   .country-card .cc-row:first-of-type{border-top:none;}
   .country-card .cc-row .k{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--paper-dim);
@@ -316,7 +317,7 @@
 
   <div class="country-card" id="countryCard">
     <div class="cc-flag" id="ccFlag"></div>
-    <div class="cc-name" id="ccName">—</div><div class="viewer-line"><span>VIEWING NOW · DEMO</span><strong id="ccViewers">—</strong></div>
+    <div class="cc-name" id="ccName">—</div><div class="cc-news" id="ccNews">—</div><div class="viewer-line"><span>VIEWING NOW · DEMO</span><strong id="ccViewers">—</strong></div>
     <div class="cc-row"><span class="k" data-i18n="population">Population</span><span class="v" id="ccPopulation">—</span></div>
     <div class="cc-row"><span class="k" data-i18n="localTime">Local Time</span><span class="v mono" id="ccTime">—</span></div>
     <div class="cc-row"><span class="k" data-i18n="currency">Currency</span><span class="v" id="ccCurrency">—</span></div>
@@ -711,8 +712,8 @@ const GLOBAL_NEWS = [
   {title:"Global stocks rise as traders reduce expectations of a September Fed rate hike",source:"Reuters",time:"today"},
   {title:"Japan wholesale inflation strengthens expectations for an earlier rate increase",source:"Reuters",time:"today"},
   {title:"Rescue operations continue after a devastating earthquake in Colombia",source:"Reuters",time:"today"},
-  {title:"EU and partner countries condemn Iran's executions of protesters",source:"Reuters",time:"yesterday"},
-  {title:"South Korea and Japan respond to North Korea missile launch ahead of joint drills",source:"Reuters",time:"yesterday"},
+  {title:"Europe faces intense heat while Greece battles dangerous wildfires",source:"Reuters",time:"today"},
+  {title:"IEA warns Middle East conflict could deepen the global oil supply shortfall",source:"Reuters",time:"yesterday"},
   {title:"AI-related chip demand supports Asian technology shares",source:"Reuters",time:"today"}
 ];
 function renderGlobalNewsTape(){
@@ -842,5 +843,44 @@ function escapeHtml(str){
 }
 })();
 </script>
+
+<script>
+/* WORLD NOW multilingual news */
+(function(){
+  const supported=['en','ar','fr','es','zh','ru'];
+  const browserLangs=(navigator.languages||[navigator.language||'en']).map(x=>String(x).toLowerCase().split('-')[0]);
+  function browserPreferred(){return browserLangs.find(x=>supported.includes(x))||'en';}
+  function getLang(){return localStorage.getItem('wnLang')||browserPreferred();}
+  function setLang(lang,save){
+    if(!supported.includes(lang)) lang='en';
+    if(save) localStorage.setItem('wnLang',lang);
+    document.documentElement.lang=lang;
+    document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    if(select && select.value!==lang) select.value=lang;
+    const db=window.WN_NEWS && window.WN_NEWS[lang];
+    if(!db) return;
+    const track=document.getElementById('globalNewsTrack');
+    if(track){
+      const items=db.global.concat(db.global).map(t=>'<span class="global-news-item"><span class="bullet">●</span><span>'+String(t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]))+'</span><span class="source">LOCAL · '+lang.toUpperCase()+'</span></span>').join('');
+      track.innerHTML=items;
+    }
+    const name=document.getElementById('ccName');
+    const headline=document.getElementById('ccNews');
+    if(name && headline){headline.textContent=db.countries[name.textContent]||db.global[0];}
+  }
+  function init(){
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    const initial=getLang();
+    setLang(initial,false);
+    if(select){select.addEventListener('change',e=>setLang(e.target.value,true));}
+    const name=document.getElementById('ccName');
+    if(name){new MutationObserver(()=>setLang(getLang(),false)).observe(name,{childList:true,characterData:true,subtree:true});}
+    window.addEventListener('languagechange',()=>{if(!localStorage.getItem('wnLang')) setLang(browserPreferred(),false);});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+
 </body>
 </html>
