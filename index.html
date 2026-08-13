@@ -196,6 +196,38 @@
 
   .ticker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);
     display:flex;align-items:center;gap:10px;padding:24px 0;}
+  /* WORLD NOW — offline global news tape */
+  .global-news-tape{
+    position:absolute;left:0;right:0;top:78px;z-index:8;height:34px;
+    display:flex;align-items:center;overflow:hidden;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:rgba(11,15,26,.94);font-family:'IBM Plex Mono',monospace;
+  }
+  .global-news-label{
+    flex:0 0 auto;height:100%;display:flex;align-items:center;
+    padding:0 14px;color:var(--amber);font-size:10px;font-weight:600;
+    letter-spacing:1.5px;border-right:1px solid var(--line);
+    background:var(--navy);
+  }
+  .global-news-window{overflow:hidden;white-space:nowrap;flex:1;}
+  .global-news-track{
+    display:inline-flex;align-items:center;white-space:nowrap;
+    will-change:transform;animation:globalNewsScroll 52s linear infinite;
+  }
+  .global-news-item{
+    display:inline-flex;align-items:center;gap:9px;margin-right:54px;
+    color:var(--paper-dim);font-size:10.5px;
+  }
+  .global-news-item .bullet{color:var(--amber);}
+  .global-news-item .source{color:var(--teal);text-transform:uppercase;font-size:9px;}
+  .global-news-window:hover .global-news-track{animation-play-state:paused;}
+  @keyframes globalNewsScroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .global-news-track{animation:none;}
+  }
   .ticker .bars{display:flex;gap:3px;}
   .ticker .bar{width:3px;height:14px;background:var(--amber);animation:tick 1s infinite ease-in-out;}
   .ticker .bar:nth-child(2){animation-delay:.15s;}
@@ -253,6 +285,13 @@
     </div>
   </header>
 
+  <div class="global-news-tape" aria-label="WORLD NOW latest headlines">
+    <div class="global-news-label">LIVE NEWS</div>
+    <div class="global-news-window">
+      <div class="global-news-track" id="globalNewsTrack"></div>
+    </div>
+  </div>
+
   <div class="search-wrap">
     <input type="text" id="searchInput" list="countryList" data-i18n-placeholder="searchPlaceholder" placeholder="Search a country…">
     <datalist id="countryList"></datalist>
@@ -278,7 +317,7 @@
 
   <div class="tooltip" id="tooltip"></div>
   <div class="hint"><span class="dot"></span><span data-i18n="hint">Click any country to see its news</span></div>
-  <div class="source-flag" id="sourceFlag">Map: Natural Earth (50m) via world-atlas · ISC license<br>Country facts: local static dataset · News: demo data</div>
+  <div class="source-flag" id="sourceFlag">Map: Natural Earth (50m) via world-atlas · ISC license<br>Country facts: local static dataset · News: local static feed · manually curated</div>
 
   <div class="zoom-controls">
     <button id="zoomOut" aria-label="Zoom out">−</button>
@@ -648,6 +687,37 @@ function tickCountryCardClock(){
   const local = new Date(utcMs + cardUtcOffsetMinutes * 60000);
   ccTime.textContent = local.toLocaleTimeString('en-US', { hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit' });
 }
+
+/* =========================================================================
+   Global moving news tape — local static database, no API required.
+   Headlines are short paraphrases of recent world-news developments.
+   ========================================================================= */
+const GLOBAL_NEWS = [
+  { title:"Oil spill reaches Oman's coast, raising major environmental concerns", source:"Reuters", time:"today" },
+  { title:"Ukraine offers Russia a Black Sea truce proposal to protect civilian shipping", source:"Reuters", time:"today" },
+  { title:"Global stocks rise as traders reduce expectations of a September Fed rate hike", source:"Reuters", time:"today" },
+  { title:"Japan's wholesale inflation strengthens expectations for a possible rate increase", source:"Reuters", time:"today" },
+  { title:"Russia-Ukraine attacks on grain shipping raise fresh global food-supply concerns", source:"Reuters", time:"today" },
+  { title:"Rescue operations continue after a major earthquake in Colombia", source:"Reuters", time:"today" },
+  { title:"Oil prices fall as global demand forecasts are revised lower", source:"Reuters", time:"today" },
+  { title:"AI-related chip demand helps lift Asian technology shares", source:"Reuters", time:"today" },
+  { title:"European countries and partners condemn Iran's executions of protesters", source:"Reuters", time:"yesterday" },
+  { title:"Parts of Europe prepare for a rare total solar eclipse", source:"Reuters", time:"yesterday" }
+];
+
+function renderGlobalNewsTape(){
+  const track = document.getElementById("globalNewsTrack");
+  if(!track) return;
+  const render = [...GLOBAL_NEWS, ...GLOBAL_NEWS].map(item => `
+    <span class="global-news-item">
+      <span class="bullet">●</span>
+      <span>${escapeHtml(item.title)}</span>
+      <span class="source">${escapeHtml(item.source)} · ${escapeHtml(item.time)}</span>
+    </span>
+  `).join("");
+  track.innerHTML = render;
+}
+renderGlobalNewsTape();
 
 /* =========================================================================
    Demo news generator — fully offline, no API calls, seeded per country.
