@@ -1235,6 +1235,45 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 </script>
+
+<script>
+/* WORLD NOW multilingual news */
+(function(){
+  const supported=['en','ar','fr','es','zh','ru'];
+  const browserLangs=(navigator.languages||[navigator.language||'en']).map(x=>String(x).toLowerCase().split('-')[0]);
+  function browserPreferred(){return browserLangs.find(x=>supported.includes(x))||'en';}
+  function getLang(){return localStorage.getItem('wnLang')||browserPreferred();}
+  function setLang(lang,save){
+    if(!supported.includes(lang)) lang='en';
+    if(save) localStorage.setItem('wnLang',lang);
+    document.documentElement.lang=lang;
+    document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    if(select && select.value!==lang) select.value=lang;
+    const db=window.WN_NEWS && window.WN_NEWS[lang];
+    if(!db) return;
+    const track=document.getElementById('globalNewsTrack');
+    if(track){
+      const items=db.global.concat(db.global).map(t=>'<span class="global-news-item"><span class="bullet">●</span><span>'+String(t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]))+'</span><span class="source">LOCAL · '+lang.toUpperCase()+'</span></span>').join('');
+      track.innerHTML=items;
+    }
+    const name=document.getElementById('ccName');
+    const headline=document.getElementById('ccNews');
+    if(name && headline){headline.textContent=db.countries[name.textContent]||db.global[0];}
+  }
+  function init(){
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    const initial=getLang();
+    setLang(initial,false);
+    if(select){select.addEventListener('change',e=>setLang(e.target.value,true));}
+    const name=document.getElementById('ccName');
+    if(name){new MutationObserver(()=>setLang(getLang(),false)).observe(name,{childList:true,characterData:true,subtree:true});}
+    window.addEventListener('languagechange',()=>{if(!localStorage.getItem('wnLang')) setLang(browserPreferred(),false);});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+
 </body>
 </html>
 
