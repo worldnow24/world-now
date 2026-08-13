@@ -4,6 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="WORLD NOW — live world news on one interactive map.">
+<meta name="keywords" content="news map, world news map, world news, live news map, global news map, WORLD NOW">
 <title>WORLD NOW — The World, Live on One Map.</title>
 <link rel="icon" type="image/png" href="world-now-emblem.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,8 +69,23 @@
   header.masthead .clock .time{color:var(--amber);font-size:16px;letter-spacing:1px;}
   header.masthead .clock .tz{font-size:10px;opacity:.7;margin-top:2px;}
 
+  /* global moving news tape */
+  .global-news-tape{position:absolute;left:0;right:0;top:78px;z-index:7;height:32px;display:flex;align-items:center;overflow:hidden;border-top:1px solid rgba(125,54,54,.55);border-bottom:1px solid rgba(125,54,54,.55);background:rgba(48,16,20,.92);font-family:'IBM Plex Mono',monospace;}
+  .global-news-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 13px;color:#d98b7b;font-size:10px;font-weight:600;letter-spacing:1.4px;border-right:1px solid rgba(125,54,54,.6);background:rgba(40,12,16,.96);}
+  .global-news-window{overflow:hidden;white-space:nowrap;flex:1;}
+  .global-news-track{display:inline-flex;align-items:center;white-space:nowrap;will-change:transform;animation:globalNewsScroll 82s linear infinite;}
+  .global-news-item{display:inline-flex;align-items:center;gap:8px;margin-right:62px;color:#d7c9c2;font-size:10.5px;font-weight:500;}
+  .global-news-item .bullet{color:#b85c50;font-size:8px;}
+  .global-news-item .source{color:#c77a6c;text-transform:uppercase;font-size:9px;font-weight:600;}
+  .global-news-window:hover .global-news-track{animation-play-state:paused;}
+  @keyframes globalNewsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .language-switcher{position:absolute;top:120px;right:32px;z-index:8;}
+  .language-switcher select{background:var(--panel);border:1px solid var(--line);color:var(--paper);border-radius:4px;padding:8px 28px 8px 10px;font-family:'IBM Plex Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
+  .language-switcher select:focus{border-color:var(--amber);}
+  @media (prefers-reduced-motion: reduce){.global-news-track{animation:none;}}
+
   /* search box */
-  .search-wrap{position:absolute;top:90px;left:32px;z-index:6;}
+  .search-wrap{position:absolute;top:120px;left:32px;z-index:6;}
   .search-wrap input{
     width:220px;background:var(--panel);border:1px solid var(--line);color:var(--paper);
     padding:9px 14px;border-radius:4px;font-family:'Inter',sans-serif;font-size:13px;outline:none;
@@ -112,7 +129,7 @@
 
   /* world clock strip — tasteful use of the empty ocean space */
   .world-clock{
-    position:absolute;top:100px;right:32px;z-index:5;
+    position:absolute;top:120px;right:32px;z-index:5;
     background:rgba(22,31,51,0.55);backdrop-filter:blur(6px);
     border:1px solid var(--line);border-radius:6px;
     padding:12px 16px;display:flex;gap:18px;
@@ -124,7 +141,7 @@
 
   /* selected-country card — left side of the map */
   .country-card{
-    position:absolute;top:150px;left:32px;width:196px;z-index:6;
+    position:absolute;top:170px;left:32px;width:196px;z-index:6;
     background:rgba(22,31,51,0.72);backdrop-filter:blur(6px);
     border:1px solid var(--line);border-radius:6px;padding:16px 16px 14px;
     opacity:0;transform:translateX(-14px);pointer-events:none;
@@ -196,38 +213,6 @@
 
   .ticker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);
     display:flex;align-items:center;gap:10px;padding:24px 0;}
-  /* WORLD NOW — offline global news tape */
-  .global-news-tape{
-    position:absolute;left:0;right:0;top:78px;z-index:8;height:34px;
-    display:flex;align-items:center;overflow:hidden;
-    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    background:rgba(11,15,26,.94);font-family:'IBM Plex Mono',monospace;
-  }
-  .global-news-label{
-    flex:0 0 auto;height:100%;display:flex;align-items:center;
-    padding:0 14px;color:var(--amber);font-size:10px;font-weight:600;
-    letter-spacing:1.5px;border-right:1px solid var(--line);
-    background:var(--navy);
-  }
-  .global-news-window{overflow:hidden;white-space:nowrap;flex:1;}
-  .global-news-track{
-    display:inline-flex;align-items:center;white-space:nowrap;
-    will-change:transform;animation:globalNewsScroll 52s linear infinite;
-  }
-  .global-news-item{
-    display:inline-flex;align-items:center;gap:9px;margin-right:54px;
-    color:var(--paper-dim);font-size:10.5px;
-  }
-  .global-news-item .bullet{color:var(--amber);}
-  .global-news-item .source{color:var(--teal);text-transform:uppercase;font-size:9px;}
-  .global-news-window:hover .global-news-track{animation-play-state:paused;}
-  @keyframes globalNewsScroll{
-    from{transform:translateX(0);}
-    to{transform:translateX(-50%);}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .global-news-track{animation:none;}
-  }
   .ticker .bars{display:flex;gap:3px;}
   .ticker .bar{width:3px;height:14px;background:var(--amber);animation:tick 1s infinite ease-in-out;}
   .ticker .bar:nth-child(2){animation-delay:.15s;}
@@ -259,7 +244,12 @@
     .world-clock{display:none;}
     .country-card{display:none;}
     .mini-map-wrap{display:none;}
-    .search-wrap{top:78px;left:18px;}
+    .global-news-tape{top:78px;height:30px;}
+    .global-news-label{padding:0 9px;font-size:9px;}
+    .global-news-item{font-size:9.5px;margin-right:42px;}
+    .language-switcher{top:112px;right:18px;}
+    .language-switcher select{font-size:9px;padding:7px 22px 7px 8px;}
+    .search-wrap{top:112px;left:18px;}
     .search-wrap input{width:150px;}
   }
 </style>
@@ -286,10 +276,19 @@
   </header>
 
   <div class="global-news-tape" aria-label="WORLD NOW latest headlines">
-    <div class="global-news-label">LIVE NEWS</div>
-    <div class="global-news-window">
-      <div class="global-news-track" id="globalNewsTrack"></div>
-    </div>
+    <div class="global-news-label" data-i18n="liveNews">LIVE NEWS</div>
+    <div class="global-news-window"><div class="global-news-track" id="globalNewsTrack"></div></div>
+  </div>
+
+  <div class="language-switcher">
+    <select id="languageSelect" aria-label="Language">
+      <option value="en">English</option>
+      <option value="ar">العربية</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="zh">中文</option>
+      <option value="ru">Русский</option>
+    </select>
   </div>
 
   <div class="search-wrap">
@@ -374,27 +373,12 @@ if (typeof d3 === "undefined" || typeof topojson === "undefined") {
    i18n dictionary — only "en" filled now; add more languages by adding keys.
    ========================================================================= */
 const STRINGS = {
-  en: {
-    title: "WORLD NOW",
-    subtitle: "The World, Live on One Map.",
-    hint: "Click any country to see its news",
-    loadingMap: "Loading map…",
-    reset: "Reset",
-    dispatch: "News Wire",
-    statusDemo: "— demo data —",
-    statusLoading: "— loading —",
-    fetchingNews: "Preparing latest headlines…",
-    demoSummary: "Demo headline for preview purposes — swap in a real news source later.",
-    close: "Close",
-    searchPlaceholder: "Search a country…",
-    shareLink: "Copy link to this country",
-    linkCopied: "Link copied!",
-    capital: "Capital",
-    population: "Population",
-    region: "Region",
-    localTime: "Local Time",
-    currency: "Currency"
-  }
+  en: { title:"WORLD NOW", subtitle:"The World, Live on One Map.", hint:"Click any country to see its news", loadingMap:"Loading map…", reset:"Reset", dispatch:"News Wire", statusDemo:"— local data —", statusLoading:"— loading —", fetchingNews:"Preparing latest headlines…", demoSummary:"Local demo headline — connect a live news API later for real-time reporting.", close:"Close", searchPlaceholder:"Search a country or try News Map…", shareLink:"Copy link to this country", linkCopied:"Link copied!", capital:"Capital", population:"Population", region:"Region", localTime:"Local Time", currency:"Currency", liveNews:"LIVE NEWS" },
+  ar: { title:"WORLD NOW", subtitle:"العالم، مباشر على خريطة واحدة.", hint:"اضغط على أي دولة لعرض أخبارها", loadingMap:"جارٍ تحميل الخريطة…", reset:"إعادة ضبط", dispatch:"شريط الأخبار", statusDemo:"— بيانات محلية —", statusLoading:"— جارٍ التحميل —", fetchingNews:"جارٍ تجهيز آخر العناوين…", demoSummary:"خبر محلي تجريبي — يمكن ربط واجهة أخبار مباشرة لاحقًا.", close:"إغلاق", searchPlaceholder:"ابحث عن دولة أو اكتب خريطة الأخبار…", shareLink:"نسخ رابط الدولة", linkCopied:"تم نسخ الرابط!", capital:"العاصمة", population:"السكان", region:"المنطقة", localTime:"الوقت المحلي", currency:"العملة", liveNews:"أخبار مباشرة" },
+  fr: { title:"WORLD NOW", subtitle:"Le monde, en direct sur une seule carte.", hint:"Cliquez sur un pays pour voir ses actualités", loadingMap:"Chargement de la carte…", reset:"Réinitialiser", dispatch:"Fil d’actualité", statusDemo:"— données locales —", statusLoading:"— chargement —", fetchingNews:"Préparation des derniers titres…", demoSummary:"Actualité locale de démonstration — connectez une API en direct plus tard.", close:"Fermer", searchPlaceholder:"Rechercher un pays ou écrire carte info…", shareLink:"Copier le lien du pays", linkCopied:"Lien copié !", capital:"Capitale", population:"Population", region:"Région", localTime:"Heure locale", currency:"Devise", liveNews:"ACTUALITÉS" },
+  es: { title:"WORLD NOW", subtitle:"El mundo, en directo en un solo mapa.", hint:"Haz clic en un país para ver sus noticias", loadingMap:"Cargando mapa…", reset:"Restablecer", dispatch:"Noticias", statusDemo:"— datos locales —", statusLoading:"— cargando —", fetchingNews:"Preparando los últimos titulares…", demoSummary:"Noticia local de demostración — conecta una API en directo más adelante.", close:"Cerrar", searchPlaceholder:"Buscar un país o escribir mapa de noticias…", shareLink:"Copiar enlace del país", linkCopied:"¡Enlace copiado!", capital:"Capital", population:"Población", region:"Región", localTime:"Hora local", currency:"Moneda", liveNews:"NOTICIAS" },
+  zh: { title:"WORLD NOW", subtitle:"世界，尽在一张实时地图。", hint:"点击国家查看新闻", loadingMap:"正在加载地图…", reset:"重置", dispatch:"新闻速报", statusDemo:"— 本地数据 —", statusLoading:"— 正在加载 —", fetchingNews:"正在准备最新标题…", demoSummary:"本地演示新闻 — 以后可接入实时新闻 API。", close:"关闭", searchPlaceholder:"搜索国家，或输入新闻地图…", shareLink:"复制国家链接", linkCopied:"已复制链接！", capital:"首都", population:"人口", region:"地区", localTime:"当地时间", currency:"货币", liveNews:"实时新闻" },
+  ru: { title:"WORLD NOW", subtitle:"Мир в реальном времени на одной карте.", hint:"Нажмите на страну, чтобы увидеть её новости", loadingMap:"Загрузка карты…", reset:"Сброс", dispatch:"Лента новостей", statusDemo:"— локальные данные —", statusLoading:"— загрузка —", fetchingNews:"Подготовка последних заголовков…", demoSummary:"Локальная демонстрационная новость — позже можно подключить live API.", close:"Закрыть", searchPlaceholder:"Поиск страны или введите карта новостей…", shareLink:"Скопировать ссылку страны", linkCopied:"Ссылка скопирована!", capital:"Столица", population:"Население", region:"Регион", localTime:"Местное время", currency:"Валюта", liveNews:"НОВОСТИ" }
 };
 let currentLang = "en";
 // Declared here (before tickClock() runs below) because tickClock() calls
@@ -409,6 +393,18 @@ function applyI18n(){
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-i18n-placeholder')));
 }
 applyI18n();
+
+const languageSelect = document.getElementById("languageSelect");
+if(languageSelect){
+  languageSelect.value = currentLang;
+  languageSelect.addEventListener("change", () => {
+    currentLang = languageSelect.value;
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+    applyI18n();
+    renderGlobalNewsTape();
+  });
+}
 
 /* =========================================================================
    Live local clock (visitor's own timezone) + small world-clock strip
@@ -490,7 +486,7 @@ const factsCache = {};
 // country reuses the already-computed set instead of recomputing it.
 const newsCache = {};
 
-const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", (event) => {
+const zoom = d3.zoom().scaleExtent([1, 6]).translateExtent([[0,0],[960,500]]).extent([[0,0],[960,500]]).on("zoom", (event) => {
   mapGroup.attr("transform", event.transform);
   updateMiniViewport(event.transform);
 });
@@ -503,7 +499,7 @@ document.getElementById("zoomReset").addEventListener("click", () => svg.transit
 function zoomToFeature(feature){
   const [[x0,y0],[x1,y1]] = pathGen.bounds(feature);
   const dx = x1-x0, dy = y1-y0, cx=(x0+x1)/2, cy=(y0+y1)/2;
-  const scale = Math.max(1, Math.min(8, 0.8 / Math.max(dx/960, dy/500)));
+  const scale = Math.max(1, Math.min(6, 0.8 / Math.max(dx/960, dy/500)));
   const translate = [960/2 - scale*cx, 500/2 - scale*cy];
   svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
 }
@@ -567,7 +563,8 @@ d3.json(WORLD_ATLAS_URL).then(world => {
   pathGen = d3.geoPath(projection);
 
   countries.features.forEach(f => { featuresByName[f.properties.name] = f; });
-  countryList.innerHTML = countries.features
+  const aliasOptions = SEARCH_ALIASES.map(name => `<option value="${escapeHtml(name)}"></option>`).join("");
+  countryList.innerHTML = aliasOptions + countries.features
     .map(f => f.properties.name).sort()
     .map(name => `<option value="${escapeHtml(name)}"></option>`).join("");
 
@@ -611,16 +608,19 @@ d3.json(WORLD_ATLAS_URL).then(world => {
   console.error("WORLD NOW: failed to load world-atlas country data:", err);
 });
 
-searchInput.addEventListener("change", () => {
-  const val = searchInput.value.trim();
-  if(featuresByName[val]) selectCountryByName(val);
-});
-searchInput.addEventListener("keydown", (e) => {
-  if(e.key === "Enter"){
-    const val = searchInput.value.trim();
-    if(featuresByName[val]) selectCountryByName(val);
+const SEARCH_ALIASES = ["news map","world news map","world news","live news map","global news map"];
+function normalizeSearch(v){ return v.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim(); }
+function handleSearchValue(){
+  const val=searchInput.value.trim();
+  if(featuresByName[val]){ selectCountryByName(val); return; }
+  const n=normalizeSearch(val);
+  if(SEARCH_ALIASES.some(alias => normalizeSearch(alias) === n)){
+    searchInput.value="";
+    searchInput.blur();
   }
-});
+}
+searchInput.addEventListener("change", handleSearchValue);
+searchInput.addEventListener("keydown", (e) => { if(e.key === "Enter") handleSearchValue(); });
 
 /* =========================================================================
    Country facts — local static data keyed by world-atlas country name.
@@ -690,32 +690,22 @@ function tickCountryCardClock(){
 
 /* =========================================================================
    Global moving news tape — local static database, no API required.
-   Headlines are short paraphrases of recent world-news developments.
    ========================================================================= */
 const GLOBAL_NEWS = [
-  { title:"Oil spill reaches Oman's coast, raising major environmental concerns", source:"Reuters", time:"today" },
-  { title:"Ukraine offers Russia a Black Sea truce proposal to protect civilian shipping", source:"Reuters", time:"today" },
-  { title:"Global stocks rise as traders reduce expectations of a September Fed rate hike", source:"Reuters", time:"today" },
-  { title:"Japan's wholesale inflation strengthens expectations for a possible rate increase", source:"Reuters", time:"today" },
-  { title:"Russia-Ukraine attacks on grain shipping raise fresh global food-supply concerns", source:"Reuters", time:"today" },
-  { title:"Rescue operations continue after a major earthquake in Colombia", source:"Reuters", time:"today" },
-  { title:"Oil prices fall as global demand forecasts are revised lower", source:"Reuters", time:"today" },
-  { title:"AI-related chip demand helps lift Asian technology shares", source:"Reuters", time:"today" },
-  { title:"European countries and partners condemn Iran's executions of protesters", source:"Reuters", time:"yesterday" },
-  { title:"Parts of Europe prepare for a rare total solar eclipse", source:"Reuters", time:"yesterday" }
+  {title:"Global markets watch interest rates and inflation data",source:"WORLD NOW",time:"today"},
+  {title:"Diplomatic efforts continue on major international conflicts",source:"WORLD NOW",time:"today"},
+  {title:"Energy prices remain a key focus for economies worldwide",source:"WORLD NOW",time:"today"},
+  {title:"Technology and artificial intelligence remain major global investment themes",source:"WORLD NOW",time:"today"},
+  {title:"Governments expand infrastructure and digital services initiatives",source:"WORLD NOW",time:"today"},
+  {title:"Extreme weather keeps climate resilience high on the global agenda",source:"WORLD NOW",time:"today"},
+  {title:"International trade and supply chains remain closely watched",source:"WORLD NOW",time:"today"},
+  {title:"Central banks continue monitoring growth, prices and employment",source:"WORLD NOW",time:"today"}
 ];
-
 function renderGlobalNewsTape(){
-  const track = document.getElementById("globalNewsTrack");
+  const track=document.getElementById("globalNewsTrack");
   if(!track) return;
-  const render = [...GLOBAL_NEWS, ...GLOBAL_NEWS].map(item => `
-    <span class="global-news-item">
-      <span class="bullet">●</span>
-      <span>${escapeHtml(item.title)}</span>
-      <span class="source">${escapeHtml(item.source)} · ${escapeHtml(item.time)}</span>
-    </span>
-  `).join("");
-  track.innerHTML = render;
+  const html=[...GLOBAL_NEWS,...GLOBAL_NEWS].map(item=>`<span class="global-news-item"><span class="bullet">●</span><span>${escapeHtml(item.title)}</span><span class="source">${escapeHtml(item.source)} · ${escapeHtml(item.time)}</span></span>`).join("");
+  track.innerHTML=html;
 }
 renderGlobalNewsTape();
 
