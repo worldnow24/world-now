@@ -17,13 +17,14 @@ jobs:
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
 
-          # Language selector: move below the city clocks instead of overlapping them.
+          # Load the standalone local multilingual news database.
+          if 'news-data.js' not in s:
+              s=s.replace('<script src="country-data.js"></script>', '<script src="country-data.js"></script>\n<script src="./news-data.js"></script>', 1)
+
+          # Language selector: keep it below the city clocks instead of overlapping them.
           s=s.replace('.language-switcher{position:absolute;top:120px;right:32px;z-index:8;', '.language-switcher{position:absolute;top:174px;right:32px;z-index:8;')
-          s=s.replace('.language-switcher{top:112px;right:18px;}', '.language-switcher{top:112px;right:18px;}')
 
           # More editorial news typography + slightly bolder tape.
-          s=s.replace(".global-news-tape{position:absolute;left:0;right:0;top:78px;z-index:7;height:32px;", ".global-news-tape{position:absolute;left:0;right:0;top:78px;z-index:7;height:32px;")
-          s=s.replace("font-family:'IBM Plex Mono',monospace;}", "font-family:'Inter',sans-serif;}", 1)
           s=s.replace("color:#d7c9c2;font-size:10.5px;font-weight:500;", "color:#e0d4cf;font-family:'Inter',sans-serif;font-size:11px;font-weight:650;letter-spacing:.01em;")
           s=s.replace("color:#c77a6c;text-transform:uppercase;font-size:9px;font-weight:600;", "color:#d38a7b;text-transform:uppercase;font-size:9px;font-weight:700;")
 
@@ -36,27 +37,34 @@ jobs:
               css='''\n  /* WORLD NOW night sky */\n  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.9;background:\n    radial-gradient(circle at 11% 18%,rgba(255,255,255,.18) 0 1px,transparent 1.5px),\n    radial-gradient(circle at 29% 72%,rgba(255,255,255,.12) 0 1px,transparent 1.5px),\n    radial-gradient(circle at 53% 27%,rgba(255,255,255,.16) 0 1px,transparent 1.5px),\n    radial-gradient(circle at 76% 64%,rgba(255,255,255,.13) 0 1px,transparent 1.5px),\n    radial-gradient(circle at 91% 16%,rgba(255,255,255,.15) 0 1px,transparent 1.5px);\n    background-size:260px 220px,330px 280px,390px 310px,300px 250px,420px 330px;animation:wnStars 34s linear infinite;}\n  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 42%,rgba(42,65,96,.18),transparent 62%);}\n  @keyframes wnStars{from{transform:translate3d(0,0,0);opacity:.72}50%{opacity:.95}to{transform:translate3d(8px,5px,0);opacity:.72}}\n  @media(prefers-reduced-motion:reduce){body::before{animation:none;}}\n'''
               s=s.replace('</style>',css+'\n</style>',1)
 
-          # Viewer activity: clearly labelled as local demo values until analytics exist.
+          # Viewer activity: visible next to the country flag in the selected-country card.
           if 'LOCAL_VIEWER_COUNTS' not in s:
-              s=s.replace('<div class="cc-name" id="ccName">—</div>', '<div class="cc-name" id="ccName">—</div><div class="viewer-line"><span>VIEWING NOW · DEMO</span><strong id="ccViewers">—</strong></div>')
-              s=s.replace('.country-card .cc-name{', '.viewer-line{display:flex;justify-content:space-between;align-items:center;padding:7px 0 9px;margin-bottom:2px;border-bottom:1px solid var(--line);font:600 8px \'IBM Plex Mono\',monospace;color:var(--paper-dim);letter-spacing:.7px}.viewer-line strong{color:var(--amber);font:600 10px \'IBM Plex Mono\',monospace}.country-card .cc-name{',1)
-              js='''\nconst LOCAL_VIEWER_COUNTS={"United States":8.4,"India":7.1,"China":6.8,"Japan":4.2,"United Kingdom":3.6,"France":3.1,"Germany":3.8,"Brazil":4.7,"Canada":2.9,"Australia":2.4,"Algeria":1.2,"Russia":5.3,"Ukraine":4.9,"Türkiye":2.7,"Spain":2.8,"Italy":2.6};\nfunction wnViewerCount(name){const v=LOCAL_VIEWER_COUNTS[name];return v==null?null:v.toFixed(1)+'K';}\n'''
+              s=s.replace('<div class="cc-flag" id="ccFlag"></div><div class="cc-name" id="ccName">—</div>', '<div class="cc-top"><div class="cc-flag" id="ccFlag"></div><div class="viewer-line"><span>VIEWING NOW · DEMO</span><strong id="ccViewers">—</strong></div></div><div class="cc-name" id="ccName">—</div>')
+              s=s.replace('.country-card .cc-name{', '.cc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.cc-top .cc-flag{margin:0}.viewer-line{display:flex;align-items:center;gap:6px;padding:5px 0 5px 8px;border-left:1px solid var(--line);font:600 7.5px \'IBM Plex Mono\',monospace;color:var(--paper-dim);letter-spacing:.45px;white-space:nowrap}.viewer-line strong{color:var(--amber);font:600 10px \'IBM Plex Mono\',monospace}.country-card .cc-name{',1)
+              js='''\nconst LOCAL_VIEWER_COUNTS={"United States":8.4,"India":7.1,"China":6.8,"Japan":4.2,"United Kingdom":3.6,"France":3.1,"Germany":3.8,"Brazil":4.7,"Canada":2.9,"Australia":2.4,"Algeria":1.2,"Russia":5.3,"Ukraine":4.9,"Türkiye":2.7,"Spain":2.8,"Italy":2.6,"Oman":1.4,"Colombia":2.1,"Greece":1.9};\nfunction wnViewerCount(name){const v=LOCAL_VIEWER_COUNTS[name];return v==null?null:v.toFixed(1)+'K';}\n'''
               s=s.replace('const HEADLINE_TEMPLATES = [',js+'\nconst HEADLINE_TEMPLATES = [',1)
               s=s.replace('const ccCurrency = document.getElementById("ccCurrency");', 'const ccCurrency = document.getElementById("ccCurrency");\nconst ccViewers = document.getElementById("ccViewers");',1)
               s=s.replace('ccName.textContent = name;', 'ccName.textContent = name; if(ccViewers) ccViewers.textContent = wnViewerCount(name) || "—";',1)
 
-          # Recent verified headline set, paraphrased for the local tape.
+          # Recent verified headline set, paraphrased for the local English fallback.
           start='const GLOBAL_NEWS = ['
           a=s.find(start)
           if a>=0:
               b=s.find('];',a)
               if b>=0:
-                  news='''const GLOBAL_NEWS = [\n  {title:"Major oil spill reaches Oman's coast, threatening a severe environmental impact",source:"Reuters",time:"today"},\n  {title:"Russia and Ukraine target grain shipments as Black Sea tensions disrupt supply",source:"Reuters",time:"today"},\n  {title:"Global stocks rise as traders reduce expectations of a September Fed rate hike",source:"Reuters",time:"today"},\n  {title:"Japan wholesale inflation strengthens expectations for an earlier rate increase",source:"Reuters",time:"today"},\n  {title:"Rescue operations continue after a devastating earthquake in Colombia",source:"Reuters",time:"today"},\n  {title:"EU and partner countries condemn Iran's executions of protesters",source:"Reuters",time:"yesterday"},\n  {title:"South Korea and Japan respond to North Korea missile launch ahead of joint drills",source:"Reuters",time:"yesterday"},\n  {title:"AI-related chip demand supports Asian technology shares",source:"Reuters",time:"today"}\n];'''
+                  news='''const GLOBAL_NEWS = [\n  {title:"Major oil spill reaches Oman's coast, threatening a severe environmental impact",source:"Reuters",time:"today"},\n  {title:"Russia and Ukraine target grain shipments as Black Sea tensions disrupt supply",source:"Reuters",time:"today"},\n  {title:"Global stocks rise as traders reduce expectations of a September Fed rate hike",source:"Reuters",time:"today"},\n  {title:"Japan wholesale inflation strengthens expectations for an earlier rate increase",source:"Reuters",time:"today"},\n  {title:"Rescue operations continue after a devastating earthquake in Colombia",source:"Reuters",time:"today"},\n  {title:"Europe faces intense heat while Greece battles dangerous wildfires",source:"Reuters",time:"today"},\n  {title:"IEA warns Middle East conflict could deepen the global oil supply shortfall",source:"Reuters",time:"yesterday"},\n  {title:"AI-related chip demand supports Asian technology shares",source:"Reuters",time:"today"}\n];'''
                   s=s[:a]+news+s[b+2:]
 
-          # Stronger search aliases, including the requested phrases.
-          s=s.replace('const SEARCH_ALIASES = ["news map","world news map","world news","live news map","global news map"];', 'const SEARCH_ALIASES = ["news map","world news map","world news","live news map","global news map","world news map website","global news map website"];')
-          s=s.replace('content="news map, world news map, world news, live news map, global news map, WORLD NOW"', 'content="News Map, World News Map, World News, Live News Map, Global News Map, WORLD NOW"')
+          # Replace the moving tape renderer with the selected-language local database.
+          marker='/* WORLD NOW multilingual news */'
+          if marker not in s:
+              lang_js='''\n<script>\n/* WORLD NOW multilingual news */\n(function(){\n  const supported=['en','ar','fr','es','zh','ru'];\n  const browserLangs=(navigator.languages||[navigator.language||'en']).map(x=>String(x).toLowerCase().split('-')[0]);\n  function browserPreferred(){return browserLangs.find(x=>supported.includes(x))||'en';}\n  function getLang(){return localStorage.getItem('wnLang')||browserPreferred();}\n  function setLang(lang,save){\n    if(!supported.includes(lang)) lang='en';\n    if(save) localStorage.setItem('wnLang',lang);\n    document.documentElement.lang=lang;\n    document.documentElement.dir=lang==='ar'?'rtl':'ltr';\n    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');\n    if(select && select.value!==lang) select.value=lang;\n    const db=window.WN_NEWS && window.WN_NEWS[lang];\n    if(!db) return;\n    const track=document.getElementById('globalNewsTrack');\n    if(track){\n      const items=db.global.concat(db.global).map(t=>'<span class="global-news-item"><span class="bullet">●</span><span>'+String(t).replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\\"':'&quot;',"'":'&#39;'}[m]))+'</span><span class="source">LOCAL · '+lang.toUpperCase()+'</span></span>').join('');\n      track.innerHTML=items;\n    }\n    const name=document.getElementById('ccName');\n    const headline=document.getElementById('ccNews');\n    if(name && headline){headline.textContent=db.countries[name.textContent]||db.global[0];}\n  }\n  function init(){\n    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');\n    const initial=getLang();\n    setLang(initial,false);\n    if(select){select.addEventListener('change',e=>setLang(e.target.value,true));}\n    const name=document.getElementById('ccName');\n    if(name){new MutationObserver(()=>setLang(getLang(),false)).observe(name,{childList:true,characterData:true,subtree:true});}\n    window.addEventListener('languagechange',()=>{if(!localStorage.getItem('wnLang')) setLang(browserPreferred(),false);});\n  }\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();\n})();\n</script>\n'''
+              s=s.replace('</body>',lang_js+'\n</body>',1)
+
+          # Add a localized country headline under the selected country name.
+          if 'id="ccNews"' not in s:
+              s=s.replace('<div class="cc-name" id="ccName">—</div>', '<div class="cc-name" id="ccName">—</div><div class="cc-news" id="ccNews">—</div>',1)
+              s=s.replace('.country-card .cc-row{', '.cc-news{font-family:\'Inter\',sans-serif;font-size:11px;line-height:1.45;color:var(--paper-dim);padding:0 0 10px;border-bottom:1px solid var(--line);margin-bottom:2px}.country-card .cc-row{',1)
 
           p.write_text(s,encoding='utf-8')
           PY
