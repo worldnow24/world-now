@@ -29,7 +29,8 @@
     animation:introReveal .9s cubic-bezier(.2,.8,.25,1) both;}
   .intro-loader-video{display:block;width:100vw;height:100vh;max-width:none;max-height:none;object-fit:cover;
     filter:drop-shadow(0 0 18px rgba(226,162,61,.12));}
-  .intro-wordmark-overlay{position:absolute;left:50%;top:50%;z-index:1;pointer-events:none;
+  .intro-emblem{position:absolute;left:50%;top:50%;z-index:1;pointer-events:none;width:min(30vw,280px);height:min(30vw,280px);object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 0 18px rgba(226,162,61,.12));animation:introEmblemReveal 1.05s cubic-bezier(.2,.8,.25,1) .14s both;}
+   .intro-wordmark-overlay{position:absolute;left:50%;top:50%;z-index:1;pointer-events:none;
     max-width:92vw;white-space:nowrap;transform:translate(-50%,calc(-50% + 5px));
     color:var(--paper);font-family:'Inter',sans-serif;font-size:clamp(2.1rem,10vw,7rem);
     font-weight:700;line-height:1;letter-spacing:.18em;text-shadow:0 2px 18px rgba(11,15,26,.72);
@@ -41,7 +42,8 @@
     transform:scaleX(0);transform-origin:left center;opacity:0;
     animation:introWordmarkSweep .55s cubic-bezier(.2,.8,.25,1) 1.05s forwards;}
   @keyframes introReveal{from{opacity:0;transform:translateY(8px) scale(.97);}to{opacity:1;transform:none;}}
-  @keyframes introWordmarkReveal{
+  @keyframes introEmblemReveal{from{opacity:0;transform:translate(-50%,-50%) scale(.82);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+   @keyframes introWordmarkReveal{
     0%{clip-path:inset(0 100% 0 0);opacity:0;letter-spacing:.18em;transform:translate(-50%,calc(-50% + 5px));}
     22%{opacity:1;}
     72%{clip-path:inset(0 0 0 0);letter-spacing:.1em;transform:translate(-50%,calc(-50% + 1px));}
@@ -57,7 +59,7 @@
 
   header.masthead{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;
     padding:22px 32px 14px;z-index:5;pointer-events:none;}
-  .brand-wordmark{display:block;width:240px;height:auto;}
+  .brand-wordmark{display:block;width:64px;height:64px;object-fit:contain;}
   header.masthead h1{font-family:'Newsreader',serif;font-weight:700;font-size:28px;margin:0;letter-spacing:0.3px;color:var(--paper);}
   header.masthead .sub{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--paper-dim);
     text-transform:uppercase;margin-top:4px;}
@@ -212,13 +214,14 @@
   @media (prefers-reduced-motion: reduce){
     .intro-loader{transition:opacity .16s linear,visibility .16s linear;}
     .intro-loader-inner,.intro-globe-lines,.intro-globe-arc{animation:none;}
+     .intro-emblem{animation:none;}
     .intro-wordmark-overlay{animation:introWordmarkStatic .16s ease both;clip-path:none;transform:translate(-50%,-50%);}
     .intro-wordmark-overlay::after{animation:none;transform:scaleX(1);opacity:.72;}
     .ticker .bar,.hint .dot{animation:none;}.wire-panel{transition:none;}
   }
   @media (max-width:640px){
     header.masthead{padding:16px 18px 10px;}
-    .brand-wordmark{width:min(180px,52vw);}
+    .brand-wordmark{width:52px;height:52px;}
     .hint{display:none;}
     .source-flag{display:none;}
     .world-clock{display:none;}
@@ -237,15 +240,13 @@
       aria-label="WORLD NOW — The World, Live on One Map.">
       <source src="world-now-loader-light_1786639207704.mp4" type="video/mp4">
     </video>
-    <div class="intro-wordmark-overlay" aria-label="WORLD NOW">
-      WORLD <span class="amber">NOW</span>
-    </div>
+    <img class="intro-emblem" src="./world-now-emblem.png" alt="WORLD NOW">
   </div>
 </div>
 
 <div class="stage">
   <header class="masthead">
-    <img class="brand-wordmark" src="world-now-wordmark.png" alt="WORLD NOW — The World, Live on One Map.">
+    <img class="brand-wordmark" src="./world-now-emblem.png" alt="WORLD NOW — The World, Live on One Map.">
     <div class="clock">
       <div class="time" id="clockTime">--:--:--</div>
       <div class="tz" id="clockTz">detecting timezone…</div>
