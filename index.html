@@ -22,6 +22,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 
 <script src="country-data.js"></script>
+<script src="./news-data.js"></script>
 
 <script src="admin1-boundaries.js"></script>
 
@@ -107,7 +108,7 @@ text-transform:uppercase;margin-top:4px;}
 
 header.masthead .clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--paper-dim);text-align:right;}
 
-header.masthead .clock .time{color:var(--amber);font-size:16px;letter-spacing:1px;}
+header.masthead .clock .time{color:var(--amber);font-size:19px;font-weight:600;letter-spacing:1px;}
 
 header.masthead .clock .tz{font-size:10px;opacity:.7;margin-top:2px;}
 
@@ -245,11 +246,11 @@ transition:opacity .25s ease, transform .25s ease;
 
   .country-card .cc-flag img{width:44px;height:auto;border-radius:2px;box-shadow:0 0 0 1px var(--line);}
 
-  .country-card .cc-name{font-family:'Newsreader',serif;font-weight:700;font-size:17px;color:var(--paper);
+  .cc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.cc-top .cc-flag{margin:0}.viewer-line{display:flex;align-items:center;gap:6px;padding:5px 0 5px 8px;border-left:1px solid var(--line);font:600 7.5px 'IBM Plex Mono',monospace;color:var(--paper-dim);letter-spacing:.45px;white-space:nowrap}.viewer-line strong{color:var(--amber);font:600 10px 'IBM Plex Mono',monospace}.country-card .cc-name{font-family:'Newsreader',serif;font-weight:700;font-size:17px;color:var(--paper);
 
 margin-bottom:10px;line-height:1.2;}
 
-  .country-card .cc-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  .cc-news{font-family:'Inter',sans-serif;font-size:11px;line-height:1.45;color:var(--paper-dim);padding:0 0 10px;border-bottom:1px solid var(--line);margin-bottom:2px}.country-card .cc-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
 
 padding:6px 0;border-top:1px solid var(--line);}
 
@@ -508,6 +509,19 @@ header.masthead{padding:16px 18px 10px;}
 @media(max-width:900px){.wn-capital-weather{left:18px;top:390px}}
 @media(max-width:640px){.wn-capital-weather{left:12px;top:345px;width:170px}.wn-capital-weather .wn-weather-list div{padding:4px 0}}
 
+
+  /* WORLD NOW night sky */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.9;background:
+    radial-gradient(circle at 11% 18%,rgba(255,255,255,.18) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 29% 72%,rgba(255,255,255,.12) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 53% 27%,rgba(255,255,255,.16) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 76% 64%,rgba(255,255,255,.13) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 91% 16%,rgba(255,255,255,.15) 0 1px,transparent 1.5px);
+    background-size:260px 220px,330px 280px,390px 310px,300px 250px,420px 330px;animation:wnStars 34s linear infinite;}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 42%,rgba(42,65,96,.18),transparent 62%);}
+  @keyframes wnStars{from{transform:translate3d(0,0,0);opacity:.72}50%{opacity:.95}to{transform:translate3d(8px,5px,0);opacity:.72}}
+  @media(prefers-reduced-motion:reduce){body::before{animation:none;}}
+
 </style>
 
 </head>
@@ -621,7 +635,7 @@ header.masthead{padding:16px 18px 10px;}
 
 <div class="cc-flag" id="ccFlag"></div>
 
-<div class="cc-name" id="ccName">—</div>
+<div class="cc-name" id="ccName">—</div><div class="cc-news" id="ccNews">—</div>
 
 <div class="cc-row"><span class="k" data-i18n="population">Population</span><span class="v" id="ccPopulation">—</span></div>
 
@@ -952,6 +966,7 @@ const ccPopulation = document.getElementById("ccPopulation");
 const ccTime = document.getElementById("ccTime");
 
 const ccCurrency = document.getElementById("ccCurrency");
+const ccViewers = document.getElementById("ccViewers");
 
 const miniMapWrap = document.getElementById("miniMapWrap");
 
@@ -1319,7 +1334,7 @@ updateCountryCard(name, c);
 
 function updateCountryCard(name, c){
 
-ccName.textContent = name;
+ccName.textContent = name; if(ccViewers) ccViewers.textContent = wnViewerCount(name) || "—";
 
  
 
@@ -1402,6 +1417,10 @@ ccTime.textContent = local.toLocaleTimeString('en-US', { hour12:false, hour:'2-d
    Demo news generator — fully offline, no API calls, seeded per country.
 
    ========================================================================= */
+
+
+const LOCAL_VIEWER_COUNTS={"United States":8.4,"India":7.1,"China":6.8,"Japan":4.2,"United Kingdom":3.6,"France":3.1,"Germany":3.8,"Brazil":4.7,"Canada":2.9,"Australia":2.4,"Algeria":1.2,"Russia":5.3,"Ukraine":4.9,"Türkiye":2.7,"Spain":2.8,"Italy":2.6,"Oman":1.4,"Colombia":2.1,"Greece":1.9};
+function wnViewerCount(name){const v=LOCAL_VIEWER_COUNTS[name];return v==null?null:v.toFixed(1)+'K';}
 
 const HEADLINE_TEMPLATES = [
 
@@ -1636,6 +1655,45 @@ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',
     if(window.WN_EN_TRANSLATIONS && window.WN_EN_TRANSLATIONS[key] != null) return window.WN_EN_TRANSLATIONS[key];
     return key;
   };
+})();
+</script>
+
+
+<script>
+/* WORLD NOW multilingual news */
+(function(){
+  const supported=['en','ar','fr','es','zh','ru'];
+  const browserLangs=(navigator.languages||[navigator.language||'en']).map(x=>String(x).toLowerCase().split('-')[0]);
+  function browserPreferred(){return browserLangs.find(x=>supported.includes(x))||'en';}
+  function getLang(){return localStorage.getItem('wnLang')||browserPreferred();}
+  function setLang(lang,save){
+    if(!supported.includes(lang)) lang='en';
+    if(save) localStorage.setItem('wnLang',lang);
+    document.documentElement.lang=lang;
+    document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    if(select && select.value!==lang) select.value=lang;
+    const db=window.WN_NEWS && window.WN_NEWS[lang];
+    if(!db) return;
+    const track=document.getElementById('globalNewsTrack');
+    if(track){
+      const items=db.global.concat(db.global).map(t=>'<span class="global-news-item"><span class="bullet">●</span><span>'+String(t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]))+'</span><span class="source">LOCAL · '+lang.toUpperCase()+'</span></span>').join('');
+      track.innerHTML=items;
+    }
+    const name=document.getElementById('ccName');
+    const headline=document.getElementById('ccNews');
+    if(name && headline){headline.textContent=db.countries[name.textContent]||db.global[0];}
+  }
+  function init(){
+    const select=document.querySelector('.language-switcher select, #languageSelect, #wnLanguageSelect');
+    const initial=getLang();
+    setLang(initial,false);
+    if(select){select.addEventListener('change',e=>setLang(e.target.value,true));}
+    const name=document.getElementById('ccName');
+    if(name){new MutationObserver(()=>setLang(getLang(),false)).observe(name,{childList:true,characterData:true,subtree:true});}
+    window.addEventListener('languagechange',()=>{if(!localStorage.getItem('wnLang')) setLang(browserPreferred(),false);});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
 
