@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="WORLD NOW — live world news on one interactive map.">
-<meta name="keywords" content="news map, world news map, world news, live news map, global news map, WORLD NOW">
+<meta name="keywords" content="News Map, World News Map, World News, Live News Map, Global News Map, WORLD NOW">
 <title>WORLD NOW — The World, Live on One Map.</title>
 <link rel="icon" type="image/png" href="world-now-emblem.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,20 +66,20 @@
   header.masthead .sub{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--paper-dim);
     text-transform:uppercase;margin-top:4px;}
   header.masthead .clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--paper-dim);text-align:right;}
-  header.masthead .clock .time{color:var(--amber);font-size:16px;letter-spacing:1px;}
+  header.masthead .clock .time{color:var(--amber);font-size:19px;font-weight:600;letter-spacing:1px;}
   header.masthead .clock .tz{font-size:10px;opacity:.7;margin-top:2px;}
 
   /* global moving news tape */
-  .global-news-tape{position:absolute;left:0;right:0;top:78px;z-index:7;height:32px;display:flex;align-items:center;overflow:hidden;border-top:1px solid rgba(125,54,54,.55);border-bottom:1px solid rgba(125,54,54,.55);background:rgba(48,16,20,.92);font-family:'IBM Plex Mono',monospace;}
+  .global-news-tape{position:absolute;left:0;right:0;top:78px;z-index:7;height:32px;display:flex;align-items:center;overflow:hidden;border-top:1px solid rgba(125,54,54,.55);border-bottom:1px solid rgba(125,54,54,.55);background:rgba(48,16,20,.92);font-family:'Inter',sans-serif;}
   .global-news-label{flex:0 0 auto;height:100%;display:flex;align-items:center;padding:0 13px;color:#d98b7b;font-size:10px;font-weight:600;letter-spacing:1.4px;border-right:1px solid rgba(125,54,54,.6);background:rgba(40,12,16,.96);}
   .global-news-window{overflow:hidden;white-space:nowrap;flex:1;}
   .global-news-track{display:inline-flex;align-items:center;white-space:nowrap;will-change:transform;animation:globalNewsScroll 82s linear infinite;}
-  .global-news-item{display:inline-flex;align-items:center;gap:8px;margin-right:62px;color:#d7c9c2;font-size:10.5px;font-weight:500;}
+  .global-news-item{display:inline-flex;align-items:center;gap:8px;margin-right:62px;color:#e0d4cf;font-family:'Inter',sans-serif;font-size:11px;font-weight:650;letter-spacing:.01em;}
   .global-news-item .bullet{color:#b85c50;font-size:8px;}
-  .global-news-item .source{color:#c77a6c;text-transform:uppercase;font-size:9px;font-weight:600;}
+  .global-news-item .source{color:#d38a7b;text-transform:uppercase;font-size:9px;font-weight:700;}
   .global-news-window:hover .global-news-track{animation-play-state:paused;}
   @keyframes globalNewsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .language-switcher{position:absolute;top:120px;right:32px;z-index:8;}
+  .language-switcher{position:absolute;top:174px;right:32px;z-index:8;}
   .language-switcher select{background:var(--panel);border:1px solid var(--line);color:var(--paper);border-radius:4px;padding:8px 28px 8px 10px;font-family:'IBM Plex Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
   .language-switcher select:focus{border-color:var(--amber);}
   @media (prefers-reduced-motion: reduce){.global-news-track{animation:none;}}
@@ -150,7 +150,7 @@
   .country-card.show{opacity:1;transform:translateX(0);pointer-events:auto;}
   .country-card .cc-flag{font-size:34px;line-height:1;margin-bottom:8px;}
   .country-card .cc-flag img{width:44px;height:auto;border-radius:2px;box-shadow:0 0 0 1px var(--line);}
-  .country-card .cc-name{font-family:'Newsreader',serif;font-weight:700;font-size:17px;color:var(--paper);
+  .viewer-line{display:flex;justify-content:space-between;align-items:center;padding:7px 0 9px;margin-bottom:2px;border-bottom:1px solid var(--line);font:600 8px 'IBM Plex Mono',monospace;color:var(--paper-dim);letter-spacing:.7px}.viewer-line strong{color:var(--amber);font:600 10px 'IBM Plex Mono',monospace}.country-card .cc-name{font-family:'Newsreader',serif;font-weight:700;font-size:17px;color:var(--paper);
     margin-bottom:10px;line-height:1.2;}
   .country-card .cc-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
     padding:6px 0;border-top:1px solid var(--line);}
@@ -252,6 +252,19 @@
     .search-wrap{top:112px;left:18px;}
     .search-wrap input{width:150px;}
   }
+
+  /* WORLD NOW night sky */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.9;background:
+    radial-gradient(circle at 11% 18%,rgba(255,255,255,.18) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 29% 72%,rgba(255,255,255,.12) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 53% 27%,rgba(255,255,255,.16) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 76% 64%,rgba(255,255,255,.13) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 91% 16%,rgba(255,255,255,.15) 0 1px,transparent 1.5px);
+    background-size:260px 220px,330px 280px,390px 310px,300px 250px,420px 330px;animation:wnStars 34s linear infinite;}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 42%,rgba(42,65,96,.18),transparent 62%);}
+  @keyframes wnStars{from{transform:translate3d(0,0,0);opacity:.72}50%{opacity:.95}to{transform:translate3d(8px,5px,0);opacity:.72}}
+  @media(prefers-reduced-motion:reduce){body::before{animation:none;}}
+
 </style>
 </head>
 <body>
@@ -303,7 +316,7 @@
 
   <div class="country-card" id="countryCard">
     <div class="cc-flag" id="ccFlag"></div>
-    <div class="cc-name" id="ccName">—</div>
+    <div class="cc-name" id="ccName">—</div><div class="viewer-line"><span>VIEWING NOW · DEMO</span><strong id="ccViewers">—</strong></div>
     <div class="cc-row"><span class="k" data-i18n="population">Population</span><span class="v" id="ccPopulation">—</span></div>
     <div class="cc-row"><span class="k" data-i18n="localTime">Local Time</span><span class="v mono" id="ccTime">—</span></div>
     <div class="cc-row"><span class="k" data-i18n="currency">Currency</span><span class="v" id="ccCurrency">—</span></div>
@@ -462,6 +475,7 @@ const ccName = document.getElementById("ccName");
 const ccPopulation = document.getElementById("ccPopulation");
 const ccTime = document.getElementById("ccTime");
 const ccCurrency = document.getElementById("ccCurrency");
+const ccViewers = document.getElementById("ccViewers");
 const miniMapWrap = document.getElementById("miniMapWrap");
 const miniSvg = d3.select("#miniMap");
 const miniGroup = miniSvg.append("g");
@@ -608,7 +622,7 @@ d3.json(WORLD_ATLAS_URL).then(world => {
   console.error("WORLD NOW: failed to load world-atlas country data:", err);
 });
 
-const SEARCH_ALIASES = ["news map","world news map","world news","live news map","global news map"];
+const SEARCH_ALIASES = ["news map","world news map","world news","live news map","global news map","world news map website","global news map website"];
 function normalizeSearch(v){ return v.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim(); }
 function handleSearchValue(){
   const val=searchInput.value.trim();
@@ -649,7 +663,7 @@ function fetchCountryFacts(name, token){
 /* Selected-country card — left side of the map: flag, population,
    local time (derived from the country's UTC offset) and currency. */
 function updateCountryCard(name, c){
-  ccName.textContent = name;
+  ccName.textContent = name; if(ccViewers) ccViewers.textContent = wnViewerCount(name) || "—";
 
   ccFlag.innerHTML = (c.flags && c.flags.svg && /^https:\/\//i.test(c.flags.svg))
     ? `<img src="${escapeHtml(c.flags.svg)}" alt="">`
@@ -692,14 +706,14 @@ function tickCountryCardClock(){
    Global moving news tape — local static database, no API required.
    ========================================================================= */
 const GLOBAL_NEWS = [
-  {title:"Global markets watch interest rates and inflation data",source:"WORLD NOW",time:"today"},
-  {title:"Diplomatic efforts continue on major international conflicts",source:"WORLD NOW",time:"today"},
-  {title:"Energy prices remain a key focus for economies worldwide",source:"WORLD NOW",time:"today"},
-  {title:"Technology and artificial intelligence remain major global investment themes",source:"WORLD NOW",time:"today"},
-  {title:"Governments expand infrastructure and digital services initiatives",source:"WORLD NOW",time:"today"},
-  {title:"Extreme weather keeps climate resilience high on the global agenda",source:"WORLD NOW",time:"today"},
-  {title:"International trade and supply chains remain closely watched",source:"WORLD NOW",time:"today"},
-  {title:"Central banks continue monitoring growth, prices and employment",source:"WORLD NOW",time:"today"}
+  {title:"Major oil spill reaches Oman's coast, threatening a severe environmental impact",source:"Reuters",time:"today"},
+  {title:"Russia and Ukraine target grain shipments as Black Sea tensions disrupt supply",source:"Reuters",time:"today"},
+  {title:"Global stocks rise as traders reduce expectations of a September Fed rate hike",source:"Reuters",time:"today"},
+  {title:"Japan wholesale inflation strengthens expectations for an earlier rate increase",source:"Reuters",time:"today"},
+  {title:"Rescue operations continue after a devastating earthquake in Colombia",source:"Reuters",time:"today"},
+  {title:"EU and partner countries condemn Iran's executions of protesters",source:"Reuters",time:"yesterday"},
+  {title:"South Korea and Japan respond to North Korea missile launch ahead of joint drills",source:"Reuters",time:"yesterday"},
+  {title:"AI-related chip demand supports Asian technology shares",source:"Reuters",time:"today"}
 ];
 function renderGlobalNewsTape(){
   const track=document.getElementById("globalNewsTrack");
@@ -712,6 +726,10 @@ renderGlobalNewsTape();
 /* =========================================================================
    Demo news generator — fully offline, no API calls, seeded per country.
    ========================================================================= */
+
+const LOCAL_VIEWER_COUNTS={"United States":8.4,"India":7.1,"China":6.8,"Japan":4.2,"United Kingdom":3.6,"France":3.1,"Germany":3.8,"Brazil":4.7,"Canada":2.9,"Australia":2.4,"Algeria":1.2,"Russia":5.3,"Ukraine":4.9,"Türkiye":2.7,"Spain":2.8,"Italy":2.6};
+function wnViewerCount(name){const v=LOCAL_VIEWER_COUNTS[name];return v==null?null:v.toFixed(1)+'K';}
+
 const HEADLINE_TEMPLATES = [
   "Government in {country} announces new economic growth plan",
   "Peaceful protests in the capital call for administrative reform",
